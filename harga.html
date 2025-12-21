@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kalkulator Pesanan SDA RoK</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #eef4fb;
+      padding: 20px;
+      color: #333;
+    }
+    .container {
+      max-width: 650px;
+      margin: auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    }
+    h2 {
+      text-align: center;
+      color: #007bff;
+      margin-bottom: 20px;
+    }
+    label {
+      font-weight: bold;
+      display: block;
+      margin-top: 15px;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 6px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      box-sizing: border-box;
+    }
+    .hasil {
+      background: #f4faff;
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 8px;
+      line-height: 1.6;
+    }
+    .hasil strong {
+      color: #007bff;
+    }
+    .note {
+      text-align: center;
+      font-size: 13px;
+      color: #666;
+      margin-top: 15px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h2>Kalkulator Pesanan SDA - RoK</h2>
+
+  <label>Rate Dollar ke Rupiah:</label>
+  <input type="number" id="rateInput" placeholder="Contoh: 15000" step="any">
+
+  <label>Harga 100M Jagung (Food) [$]:</label>
+  <input type="number" id="foodPriceInput" placeholder="Contoh: 9" step="any">
+  <label>Jumlah Jagung (Food) dalam juta:</label>
+  <input type="number" id="foodQtyInput" placeholder="Contoh: 10" step="any">
+
+  <label>Harga 100M Kayu (Wood) [$]:</label>
+  <input type="number" id="woodPriceInput" placeholder="Contoh: 9" step="any">
+  <label>Jumlah Kayu (Wood) dalam juta:</label>
+  <input type="number" id="woodQtyInput" placeholder="Contoh: 11" step="any">
+
+  <label>Harga 100M Batu (Stone) [$]:</label>
+  <input type="number" id="stonePriceInput" placeholder="Contoh: 9" step="any">
+  <label>Jumlah Batu (Stone) dalam juta:</label>
+  <input type="number" id="stoneQtyInput" placeholder="Contoh: 7" step="any">
+
+  <label>Harga 100M Emas (Gold) [$]:</label>
+  <input type="number" id="goldPriceInput" placeholder="Contoh: 11" step="any">
+  <label>Jumlah Emas (Gold) dalam juta:</label>
+  <input type="number" id="goldQtyInput" placeholder="Contoh: 5.5" step="any">
+
+  <div class="hasil" id="hasil">
+    Masukkan semua data untuk melihat hasil.
+  </div>
+
+  <div class="note">Dihitung otomatis — Cocok untuk bantu rekap pesanan pembeli</div>
+</div>
+
+<script>
+  const rateInput = document.getElementById("rateInput");
+
+  const resources = [
+    { name: "Jagung (Food)", priceId: "foodPriceInput", qtyId: "foodQtyInput" },
+    { name: "Kayu (Wood)", priceId: "woodPriceInput", qtyId: "woodQtyInput" },
+    { name: "Batu (Stone)", priceId: "stonePriceInput", qtyId: "stoneQtyInput" },
+    { name: "Emas (Gold)", priceId: "goldPriceInput", qtyId: "goldQtyInput" }
+  ];
+
+  const hasilDiv = document.getElementById("hasil");
+
+  function formatRp(val) {
+    return "Rp" + val.toLocaleString("id-ID");
+  }
+
+  function hitung() {
+    const rate = parseFloat(rateInput.value);
+    if (isNaN(rate) || rate <= 0) {
+      hasilDiv.innerHTML = "Masukkan nilai tukar dollar yang valid.";
+      return;
+    }
+
+    let totalUSD = 0;
+    let totalIDR = 0;
+    let output = [];
+
+    resources.forEach(res => {
+      const price100M = parseFloat(document.getElementById(res.priceId).value);
+      const jumlahM = parseFloat(document.getElementById(res.qtyId).value);
+
+      if (!isNaN(price100M) && price100M > 0 && !isNaN(jumlahM) && jumlahM > 0) {
+        const pricePerM = price100M / 100;
+        const totalResUSD = pricePerM * jumlahM;
+        const totalResIDR = totalResUSD * rate;
+
+        totalUSD += totalResUSD;
+        totalIDR += totalResIDR;
+
+        output.push(`
+          <strong>${res.name}</strong><br>
+          - Jumlah: ${jumlahM}M<br>
+          - Harga: $${totalResUSD.toFixed(2)} (${formatRp(totalResIDR)})<br><br>
+        `);
+      }
+    });
+
+    if (output.length > 0) {
+      output.push(`<strong>Total Seluruhnya:</strong><br>
+        - Total USD: $${totalUSD.toFixed(2)}<br>
+        - Total Rupiah: ${formatRp(totalIDR)}
+      `);
+      hasilDiv.innerHTML = output.join('');
+    } else {
+      hasilDiv.innerHTML = "Masukkan harga dan jumlah minimal satu sumber daya.";
+    }
+  }
+
+  // Jalankan hitung setiap kali input berubah
+  document.querySelectorAll("input").forEach(input => {
+    input.addEventListener("input", hitung);
+  });
+</script>
+
+</body>
+  </html>
