@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Add Proof | TP STORE</title>
+
+<style>
+body {
+  background:#020617;
+  color:#e5e7eb;
+  font-family:Arial,sans-serif;
+  padding:20px;
+}
+.container {
+  max-width:480px;
+  margin:auto;
+  background:#0f172a;
+  padding:20px;
+  border-radius:12px;
+}
+h2 {
+  text-align:center;
+  color:#38bdf8;
+}
+input, button {
+  width:100%;
+  padding:10px;
+  margin-top:10px;
+  border-radius:6px;
+  border:none;
+}
+button {
+  background:#22c55e;
+  font-weight:bold;
+  cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+  <h2>Add Delivery Proof</h2>
+
+  <input id="kd" placeholder="KD (example: 3766)">
+  <input id="date" type="date">
+  <input id="food" placeholder="Food (M)">
+  <input id="wood" placeholder="Wood (M)">
+  <input id="stone" placeholder="Stone (M)">
+  <input id="gold" placeholder="Gold (M)">
+  <input id="screenshot" placeholder="Screenshot link">
+
+  <button onclick="send()">Submit Proof</button>
+  <p id="msg"></p>
+</div>
+
+<script>
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwDcKlJ6beOic83ERwQHajUxtZO_rSFj4EG3jf9x6rd9DafL6ujllXZvPBkOwcy9Mgzsg/exec";
+
+function send() {
+  const data = {
+    kd: document.getElementById("kd").value,
+    date: document.getElementById("date").value,
+    food: document.getElementById("food").value,
+    wood: document.getElementById("wood").value,
+    stone: document.getElementById("stone").value,
+    gold: document.getElementById("gold").value,
+    screenshot: document.getElementById("screenshot").value
+  };
+
+  fetch(SCRIPT_URL, {
+    method: "POST",
+    body: JSON.stringify(data)
+  })
+  .then(r => r.json())
+  .then(() => {
+    document.getElementById("msg").innerHTML = "✅ Proof added successfully";
+  })
+  .catch(() => {
+    document.getElementById("msg").innerHTML = "❌ Error";
+  });
+}
+</script>
+</body>
+</html>
