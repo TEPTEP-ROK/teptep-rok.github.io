@@ -98,6 +98,7 @@ header p{
 .post img{
   width:100%;
   display:block;
+  cursor:pointer;
 }
 .post-content{
   padding:20px;
@@ -200,6 +201,32 @@ header p{
   padding:25px;
   color:#666;
 }
+
+/* MODAL */
+#imgModal{
+  position:fixed;
+  top:0;left:0;
+  width:100%;height:100%;
+  background:rgba(0,0,0,0.9);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:9999;
+}
+#imgModal img{
+  max-width:90%;
+  max-height:90%;
+  border-radius:12px;
+  box-shadow:0 0 30px gold;
+}
+#imgModal span{
+  position:absolute;
+  top:20px;
+  right:30px;
+  font-size:30px;
+  color:white;
+  cursor:pointer;
+}
 </style>
 </head>
 
@@ -211,7 +238,6 @@ header p{
   <p>Proof of Delivery • Manual Farm • Trusted Seller</p>
 </header>
 
-<!-- STATS -->
 <div class="stats-section">
   <div class="stats-card">
     <div class="stats-grid">
@@ -233,23 +259,17 @@ header p{
 © TP STORE — Dark Gold Luxury Edition
 </div>
 
-<!-- CONTACT -->
 <div class="contact-section">
   <div class="contact-card">
     <h2>Contact TP STORE</h2>
 
-    <a href="#" class="gold-btn">
-      <img src="https://cdn-icons-png.flaticon.com/512/5968/5968756.png">
-      Discord: @TPSTORE
-    </a>
+    <a href="#" class="gold-btn">Discord: @TPSTORE</a>
 
     <a href="https://wa.me/6282185460409" target="_blank" class="gold-btn">
-      <img src="https://cdn-icons-png.flaticon.com/512/733/733585.png">
       WhatsApp: +62 821-8546-0409
     </a>
 
     <a href="https://t.me/sakbanasein" target="_blank" class="gold-btn">
-      <img src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png">
       Telegram: @sakbanasein
     </a>
   </div>
@@ -258,6 +278,12 @@ header p{
 <a href="https://wa.me/6282185460409" target="_blank" class="floating-contact">
   Contact Now
 </a>
+
+<!-- MODAL -->
+<div id="imgModal">
+  <span onclick="closeModal()">&times;</span>
+  <img id="modalImg">
+</div>
 
 <script>
 const sheetURL="https://docs.google.com/spreadsheets/d/e/2PACX-1vS-7TcK5mzNw7gytjViKlYTkF-g3tHAzZd5uGVhHjknnrWilpsBnZYPHv4J7arck9wd22P5XGTrq5CB/pub?output=csv";
@@ -280,7 +306,7 @@ fetch(sheetURL)
 
     posts.innerHTML+=`
       <div class="post">
-        <img src="${c[6]}" alt="Proof">
+        <img src="${c[6]}" onclick="openModal(this.src)">
         <div class="post-content">
           <div class="kd">Kingdom KD ${c[0]}</div>
           <h3>Order Completed Successfully ✅</h3>
@@ -312,7 +338,16 @@ function animateCounter(id,target){
     document.getElementById(id).innerText=count;
   },20);
 }
+
+function openModal(src){
+  document.getElementById("imgModal").style.display="flex";
+  document.getElementById("modalImg").src=src;
+}
+
+function closeModal(){
+  document.getElementById("imgModal").style.display="none";
+}
 </script>
 
 </body>
-</html>
+  </html>
