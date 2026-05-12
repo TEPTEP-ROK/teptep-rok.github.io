@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>TEPTEP ROK Blog</title>
+<meta name="description" content="TEPTEP Professional Modern Blog">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+font-family:'Inter',sans-serif;
+background:#08111f;
+color:white;
+line-height:1.7;
+}
+
+.container{
+width:90%;
+max-width:1200px;
+margin:auto;
+}
+
+.header{
+position:sticky;
+top:0;
+background:rgba(15,23,42,0.85);
+backdrop-filter:blur(12px);
+border-bottom:1px solid rgba(255,255,255,0.08);
+z-index:1000;
+}
+
+.header .container{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:18px 0;
+}
+
+.logo{
+font-size:30px;
+font-weight:800;
+text-decoration:none;
+color:white;
+}
+
+.nav{
+display:flex;
+gap:24px;
+}
+
+.nav a{
+color:#cbd5e1;
+text-decoration:none;
+}
+
+.hero{
+padding:120px 0 80px;
+background:
+radial-gradient(circle at top right,#d97706 0%,transparent 30%),
+radial-gradient(circle at left,#b91c1c 0%,transparent 25%);
+}
+
+.badge{
+display:inline-block;
+padding:10px 18px;
+background:rgba(255,255,255,0.1);
+border-radius:999px;
+font-size:14px;
+}
+
+.hero h1{
+font-size:64px;
+line-height:1.1;
+max-width:700px;
+margin:24px 0;
+}
+
+.hero p{
+max-width:650px;
+font-size:18px;
+color:#cbd5e1;
+}
+
+.section-title{
+margin:60px 0 30px;
+}
+
+.section-title h2{
+font-size:42px;
+}
+
+.section-title p{
+color:#94a3b8;
+}
+
+.posts-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+gap:30px;
+margin-bottom:80px;
+}
+
+.post-card{
+background:#111827;
+border-radius:24px;
+overflow:hidden;
+border:1px solid rgba(255,255,255,0.06);
+transition:0.3s;
+}
+
+.post-card:hover{
+transform:translateY(-5px);
+}
+
+.post-image{
+width:100%;
+height:220px;
+object-fit:cover;
+}
+
+.post-content{
+padding:24px;
+}
+
+.post-category{
+color:#f59e0b;
+font-size:14px;
+margin-bottom:10px;
+}
+
+.post-title{
+font-size:26px;
+margin-bottom:12px;
+}
+
+.post-desc{
+color:#cbd5e1;
+margin-bottom:20px;
+}
+
+.read-more{
+display:inline-block;
+padding:12px 18px;
+background:#d97706;
+color:white;
+text-decoration:none;
+border-radius:14px;
+font-weight:600;
+}
+
+.footer{
+padding:60px 0;
+text-align:center;
+border-top:1px solid rgba(255,255,255,0.08);
+color:#94a3b8;
+}
+
+.article-page{
+max-width:900px;
+margin:auto;
+padding:40px 20px;
+}
+
+.article-title{
+font-size:50px;
+line-height:1.2;
+margin:20px 0;
+}
+
+.article-image{
+width:100%;
+border-radius:24px;
+margin:30px 0;
+}
+
+.article-content{
+font-size:18px;
+color:#e2e8f0;
+}
+
+@media(max-width:768px){
+.hero h1{
+font-size:40px;
+}
+
+.nav{
+display:none;
+}
+
+.article-title{
+font-size:34px;
+}
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+<div class="container">
+<a href="./" class="logo">TEPTEP</a>
+
+<nav class="nav">
+<a href="./">Home</a>
+<a href="#latest">Latest</a>
+</nav>
+</div>
+</header>
+
+<section class="hero">
+<div class="container">
+<span class="badge">Professional Blog</span>
+
+<h1>
+Rise of Kingdoms Guides, Tips & Strategy
+</h1>
+
+<p>
+Discover the best Rise of Kingdoms guides, farming strategies, commander builds, events, codes, kingdom news, and advanced gameplay tips.
+</p>
+</div>
+</section>
+
+<main class="container">
+<section id="latest">
+<div class="section-title">
+<h2>Latest Rise of Kingdoms Articles</h2>
+
+</div>
+
+<div id="posts" class="posts-grid"></div>
+</section>
+</main>
+
+<footer class="footer">
+<div class="container">
+<h3>TEPTEP</h3>
+<p>Rise of Kingdoms Strategy & Farming Blog</p>
+</div>
+</footer>
+
+<script>
+const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRzyevMFEvt7kRVU2r9ie3cCUejCyGfyuXwtgfG0EAzh9wLK_PahePjfvKIgL_wM4TVTuShABxrfQoW/pub?output=csv";
+
+const postsContainer = document.getElementById("posts");
+
+function getSlug(){
+const params = new URLSearchParams(window.location.search);
+return params.get("post");
+}
+
+Papa.parse(sheetURL,{
+download:true,
+header:true,
+complete:function(results){
+const data = results.data;
+
+const slug = getSlug();
+
+if(slug){
+renderArticle(data,slug);
+}else{
+renderPosts(data);
+}
+}
+});
+
+function renderPosts(posts){
+postsContainer.innerHTML="";
+
+posts.reverse().forEach(post=>{
+
+const imageHTML = post.image
+? `<img class="post-image" src="${post.image}" alt="${post.title}">`
+: "";
+
+postsContainer.innerHTML += `
+<article class="post-card">
+${imageHTML}
+
+<div class="post-content">
+<div class="post-category">${post.category}</div>
+
+<h3 class="post-title">${post.title}</h3>
+
+<p class="post-desc">${post.description}</p>
+
+<a class="read-more" href="?post=${post.slug}">
+Read Article
+</a>
+</div>
+</article>
+`;
+});
+}
+
+function renderArticle(posts,slug){
+const post = posts.find(p=>p.slug===slug);
+
+if(!post){
+document.body.innerHTML=`
+<div class="article-page">
+<h1>Article Not Found</h1>
+</div>
+`;
+return;
+}
+
+document.title = post.title + " | TEPTEP";
+
+document.body.innerHTML=`
+<div class="article-page">
+<a href="./" class="read-more">← Back</a>
+
+<div style="margin-top:30px;color:#f59e0b;">
+${post.category}
+</div>
+
+<h1 class="article-title">
+${post.title}
+</h1>
+
+<div style="color:#94a3b8;margin-bottom:20px;">
+${post.author} • ${post.date}
+</div>
+
+${post.image ? `<img class="article-image" src="${post.image}">` : ""}
+
+<div class="article-content">
+${post.content.replace(/
+/g,"<br><br>")}
+</div>
+</div>
+`;
+}
+</script>
+
+</body>
+  </html>
