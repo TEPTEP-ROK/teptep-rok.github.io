@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TEPTEP Admin Panel</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+body{
+font-family:'Inter',sans-serif;
+background:#08111f;
+color:white;
+padding:30px;
+}
+
+.container{
+max-width:900px;
+margin:auto;
+background:#111827;
+padding:30px;
+border-radius:24px;
+}
+
+input,textarea{
+width:100%;
+padding:16px;
+margin-bottom:20px;
+background:#1f2937;
+border:none;
+border-radius:14px;
+color:white;
+}
+
+textarea{
+min-height:250px;
+}
+
+button{
+width:100%;
+padding:18px;
+background:#d97706;
+border:none;
+border-radius:14px;
+color:white;
+font-size:18px;
+font-weight:700;
+cursor:pointer;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+<h1>TEPTEP Admin Panel</h1>
+
+<input type="text" id="title" placeholder="Judul Artikel">
+
+<input type="text" id="slug" placeholder="Slug URL" readonly>
+
+<input type="text" id="category" placeholder="Kategori">
+
+<input type="text" id="image" placeholder="Link Gambar">
+
+<textarea id="description" placeholder="Deskripsi"></textarea>
+
+<textarea id="content" placeholder="Isi Artikel"></textarea>
+
+<button onclick="publishPost()">
+Publish Article
+</button>
+
+<div id="status"></div>
+</div>
+
+<script>
+const scriptURL = "https://script.google.com/macros/s/AKfycbzFkTYD3xTj6BH7i5bWS1mR1e854CblSRAndN9q5OWviEROOvGntjRCP9ycqd8gvWUZ-g/exec";
+
+function generateSlug(text){
+return text
+.toLowerCase()
+.replace(/[^a-z0-9\s-]/g,'')
+.trim()
+.replace(/\s+/g,'-');
+}
+
+title.addEventListener('input',()=>{
+slug.value = generateSlug(title.value);
+});
+
+function publishPost(){
+
+const data = {
+title: title.value,
+slug: slug.value,
+category: category.value,
+image: image.value,
+description: description.value,
+content: content.value,
+date: new Date().toISOString().split('T')[0]
+};
+
+fetch(scriptURL, {
+method:'POST',
+body:JSON.stringify(data)
+})
+.then(res=>res.text())
+.then(()=>{
+document.getElementById('status').innerHTML = '✅ Artikel berhasil dipublish';
+});
+}
+</script>
+
+</body>
+</html>
